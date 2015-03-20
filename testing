@@ -1,0 +1,68 @@
+<?php
+ include_once(__DIR__ .'\myLogin.php');
+ 
+ class mySession extends myLogin {
+ private static $classObj = NULL;
+      protected function __construct(){  
+	  if(!isset($_SESSION)) SESSION_START(); 
+	  parent::__construct();         }
+	  
+	      public static function getObj(){       
+          if(!self::$classObj)     
+		  self::$classObj = new self();   
+		  return self::$classObj;         }
+		  
+		            public function sLogin($user,$pass){  
+					if($this->login($user,$pass)){     
+                    $_SESSION['username'] = $user;     
+                    $_SESSION['password'] = $pass;     
+                    return true;     
+					}else return false;         }
+					
+					        public function sLogout(){   
+							if(isset($_SESSION['username']) and isset($_SESSION['password']))  
+							unset($_SESSION['username'],$_SESSION['password']);         }
+							
+							        public function checkSLogin(){ 
+									if(isset($_SESSION['username']) and isset($_SESSION['password'])){  
+									if($this->login($_SESSION['username'], $_SESSION['password']))     
+									return true;     
+									else             
+									return false;    
+									}else return false;    
+									} } // end mySession class
+									
+									
+									// test 
+									$user='user1';
+									$pass='123';
+									
+									
+									$obj = mySession::getObj();
+									if($obj->login($user,$pass))  
+									echo "login ok !<br>";
+									else
+									echo "not login !<br>";
+									
+									if($obj->sLogin($user,$pass))
+									echo "session login ok !<br>"; 
+									else
+									 echo "not session login !<br>"; 
+									 
+									 $obj->sLogout();
+									 echo "logout session ok!<br>";
+									 if($obj->checkSLogin())   
+									 echo "session login ok !<br>";
+									 else 
+									 echo "not session login !<br>";
+									 
+									 
+									 if($obj->makeQuery("SELECT * FROM users")->num_rows)
+									 echo "Found Users !";
+									 else   
+									 echo "No users in the table !"; ?>
+									
+									
+									
+									
+									
